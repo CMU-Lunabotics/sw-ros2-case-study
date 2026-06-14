@@ -1,13 +1,13 @@
 
 
 # Preliminaries 
+- running ubuntu 22.04 (Humble) for compatability with Jetson Orin 
+- ROS jazzy
 
 ## Hardware Setup 
-
-- Jetson Orin
-- running ubuntu 22.04 (Humble)
-- ROS jazzy
 
 ## MacOS Setup 
 
 ## Linux Setup 
+
+## Windows Setup 
