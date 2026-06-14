@@ -4,15 +4,15 @@
 - running ubuntu 22.04 (Humble) for compatability with Jetson Orin 
 - ROS jazzy
 
-## Hardware Setup 
+## 1 Hardware Setup 
 
-## MacOS Setup 
+## 1.1 MacOS Setup 
 
 ### UTM 
 - setup 
 - transfering data from mac to vm
 - streaming sensor input to vm 
 
-## Linux Setup 
+## 1.2 Linux Setup 
 
-## Windows Setup 
+## 1.3 Windows Setup 
