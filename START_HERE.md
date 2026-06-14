@@ -9,7 +9,13 @@
 ## 1.1 MacOS Setup 
 
 ### UTM 
-- setup 
+UTM enables mac users to simulate the architecture of arm-based linux machines.  
+
+1. Download arm64 server image.
+Note, using images from the official / main ubuntu website is key. There are full desktop images out there that come with a gui, but none are published by the official website. My experience with them is that they are brittle and tend to fail.
+
+2. set up gui 
+
 - transfering data from mac to vm
 - streaming sensor input to vm 
 
