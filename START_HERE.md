@@ -8,6 +8,11 @@
 
 ## MacOS Setup 
 
+### UTM 
+- setup 
+- transfering data from mac to vm
+- streaming sensor input to vm 
+
 ## Linux Setup 
 
 ## Windows Setup 
