@@ -18,3 +18,7 @@ T3 (ROS Subscriber):
 
 Sanity Check: clicking on the gazebo gui and typing should lead to visible data packets in T3. 
 
+You can replicate this by intializing the bridge using a yaml file 
+`ros2 run ros_gz_bridge parameter_bridge --ros-args -p config_file:=path/to/config.yaml`
+
+Similary, with xml and python launch files. (See detailed docs [here](https://github.com/gazebosim/ros_gz/blob/ros2/ros_gz_bridge/README.md))
