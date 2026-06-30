@@ -34,5 +34,20 @@ ament_target_dependencies(mover rclcpp std_msgs geometry_msgs)
 install(TARGETS
   mover
   DESTINATION lib/${PROJECT_NAME})
+install(
+  DIRECTORY
+    launch/
+  DESTINATION share/${PROJECT_NAME}/launch
+)
+install(
+  DIRECTORY
+    models/
+  DESTINATION share/${PROJECT_NAME}/models
+)
 
+install(
+  DIRECTORY
+    worlds/
+  DESTINATION share/${PROJECT_NAME}/worlds
+)
 ament_package()
