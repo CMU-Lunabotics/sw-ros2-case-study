@@ -19,7 +19,8 @@ Note, using images from the official / main ubuntu website is key. There are ful
 - transfering data from mac to vm
 - streaming sensor input to vm
 
-  Use the startup script for automated installation of the ros packages; if it hangs, reset the VM; run these smoke tests to verify ros install properly 
+  Use the startup script for automated installation of the ros packages; if it hangs, reset the VM; run these smoke tests to verify ros install properly
+3. Move to Linux setup 
 
 ## 1.2 Linux Setup 
 
