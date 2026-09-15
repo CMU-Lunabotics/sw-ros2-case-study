@@ -1,19 +1,10 @@
 cmake_minimum_required(VERSION 3.8)
 project(move)
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
-endif()
-
-# find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -28,12 +19,12 @@ if(BUILD_TESTING)
 endif()
 
 add_executable(mover src/robot_controller.cc)
-ament_target_dependencies(mover rclcpp std_msgs geometry_msgs)
-
+ament_target_dependencies(mover rclcpp geometry_msgs sensor_msgs)
 
 install(TARGETS
   mover
   DESTINATION lib/${PROJECT_NAME})
+
 install(
   DIRECTORY
     launch/
@@ -44,10 +35,14 @@ install(
     models/
   DESTINATION share/${PROJECT_NAME}/models
 )
-
 install(
   DIRECTORY
     worlds/
   DESTINATION share/${PROJECT_NAME}/worlds
+)
+install(
+  DIRECTORY
+    rviz/
+  DESTINATION share/${PROJECT_NAME}/rviz
 )
 ament_package()
