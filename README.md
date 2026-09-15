@@ -1,20 +1,16 @@
 # Starter Project
 
-Use this as a starting point for understanding core concepts, libraries, and workflows
-underlying the autonomy stack.
+# submit by 9/23 
 
 The `move` package is a **Gazebo sim testbed**: a differential-drive robot with a lidar
 and an IMU, simulated in Gazebo and bridged into ROS 2 so you can see its sensor data and
 its transforms in RViz.
 
 ---
+## Setup: Gazebo Sim Testbed Bringup
 
-## Gazebo Sim Testbed Bringup
+Note, you need a machine running. Ubuntu with **ROS 2 Jazzy** and **Gazebo Harmonic** (`ros_gz_sim`, `ros_gz_bridge`)
 
-### Prerequisites
-
-- Ubuntu with **ROS 2 Jazzy** and **Gazebo Harmonic** (`ros_gz_sim`, `ros_gz_bridge`)
-- See `START_HERE.md` for host/VM setup.
 
 ### 1. Build the workspace
 
@@ -39,60 +35,14 @@ showing the same robot with its lidar returns.
 
 The robot **sits still** on startup. That is intentional — nothing is commanding it yet.
 
-Useful launch arguments:
 
-| Argument | Default | Effect |
-|---|---|---|
-| `rviz` | `true` | Set `rviz:=false` to skip RViz (useful over SSH) |
-| `controller` | `false` | Set `controller:=true` to run the forward-drive node |
-
-### 3. Verify the bridge
-
-In a second terminal (remember to source):
-
-```bash
-ros2 topic list
-```
-
-Expected: `/clock`, `/cmd_vel`, `/imu`, `/joint_states`, `/lidar`,
-`/model/vehicle_blue/odometry`, `/robot_description`, `/tf`, `/tf_static`.
-
-Check real data is flowing:
+You can access the following data from simulation: lidar + imu 
 
 ```bash
 ros2 topic echo /lidar --once     # LaserScan, 640 ranges, frame_id: chassis
 ros2 topic echo /imu --once       # Imu, frame_id: chassis
 ros2 topic hz /lidar              # ~10 Hz (lower if the sim is running slow)
 ```
-
-### 4. Verify the transform tree
-
-```bash
-ros2 run tf2_ros tf2_echo map left_wheel
-```
-
-The tree is `map -> odom -> chassis -> {left_wheel, right_wheel}`. `map -> odom` comes from
-a static transform in the launch file, `odom -> chassis` from Gazebo's odometry, and the
-wheel transforms from `robot_state_publisher` driven by `/joint_states`.
-
-### 5. Drive the robot
-
-```bash
-ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 1.0}}" -r 10
-```
-
-Or run the bundled controller, which subscribes to `/lidar` and `/imu` and publishes
-`/cmd_vel`, stopping when the lidar sees an obstacle within 1.5 m:
-
-```bash
-ros2 run move mover
-# or bring the whole stack up with it enabled:
-ros2 launch move sim.launch.py controller:=true
-```
-
-The world contains a wall at x=6 and a pillar at (4, 2.5) so the lidar has something to
-return. With the controller enabled the robot drives forward and stops ~1.5 m short of the
-wall.
 
 ---
 
@@ -114,40 +64,26 @@ exactly one place. `robot_state_publisher` reads that same `model.sdf` for
 
 ---
 
-## Troubleshooting
+## TASK 1: Make it move 
 
-**"Detected jump back in time" / "Moved backwards in time"**
-Two sims are running at once, so there are two `/clock` publishers. Check with
-`ros2 topic info /clock` — publisher count must be `1`. Kill strays:
+### 5. Drive the robot
+
 ```bash
-pkill -f gz-sim; pkill -f parameter_bridge; pkill -f robot_state_publisher
+ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 1.0}}" -r 10
 ```
-This also happens if a node in a sim-time stack is missing `use_sim_time: True`.
 
-**Nothing visible in RViz**
-RViz defaults its fixed frame to `map`. The launch file publishes `map -> odom` and ships
-`rviz/vehicle.rviz` with the fixed frame preset, so use the bundled config (the launch file
-passes it with `-d`) rather than a blank RViz.
+Or run the bundled controller, which subscribes to `/lidar` and `/imu` and publishes
+`/cmd_vel`, stopping when the lidar sees an obstacle within 1.5 m:
 
-**Robot missing in Gazebo**
-The world resolves the robot via `model://vehicle_blue`, which needs
-`GZ_SIM_RESOURCE_PATH` to include `install/move/share/move/models`. The launch file sets
-this; if you run `gz sim` by hand, export it yourself.
-
-**`XML Element[gz_frame_id] ... not defined in SDF`**
-Harmless. `gz_frame_id` is a gz-sim extension that is not in the SDF schema; it is what
-makes the sensors report `frame_id: chassis` instead of a scoped name.
-
-**No lidar points in RViz**
-Check the scan is actually hitting something:
 ```bash
-ros2 topic echo /lidar --once --full-length
+ros2 run move mover
+# or bring the whole stack up with it enabled:
+ros2 launch move sim.launch.py controller:=true
 ```
-If every entry under `ranges:` is `.inf`, the sensor is working but nothing is within its
-10 m range — RViz draws nothing for infinite returns. Add geometry to
-`move/worlds/building_robot.sdf`. Note plain `ros2 topic echo /lidar` truncates the 640
-ranges with `'...'`; `--full-length` is needed to see them.
 
-**`SDFormat link [chassis] has a <sensor>, but URDF does not support this`**
-Harmless. URDF has no sensor concept, so `sdformat_urdf` drops the sensor tags when
-building the TF tree. The sensors still run in Gazebo.
+The world contains a wall at x=6 and a pillar at (4, 2.5) so the lidar has something to
+return. With the controller enabled the robot drives forward and stops ~1.5 m short of the
+wall.
+
+## TASK 2: Detect Obstructions 
+
