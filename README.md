@@ -66,6 +66,8 @@ exactly one place. `robot_state_publisher` reads that same `model.sdf` for
 
 ## TASK 1: Make it move 
 
+you can drive the robot manually, want to replicate this behavior in an automatic fashion
+
 ### 5. Drive the robot
 
 ```bash
@@ -85,5 +87,8 @@ The world contains a wall at x=6 and a pillar at (4, 2.5) so the lidar has somet
 return. With the controller enabled the robot drives forward and stops ~1.5 m short of the
 wall.
 
-## TASK 2: Detect Obstructions 
+## Task 2: analyze error 
+Subscribe to robots state on imu and compare recorded movement versus instructured movement
+ 
+## TASK 3 (Stretch): Detect Obstructions 
 
