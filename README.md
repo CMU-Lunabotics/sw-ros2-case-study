@@ -1,18 +1,24 @@
 # Lunabotics Application Follow Up: ROS2 Case Study
 
-only have a limited number of spots, we want more information to guide second round of seleciton. also, get up to speed on ROS2. so, two purposes: 1) we can make a well informed decision about on the team and 2) once you compelte, you'll be good to hop on a specific subteam. 
+We only have a limited number of spots, so we want more information to guide the second
+round of selection. We would also like you to get up to speed on ROS 2. This exercise
+therefore serves two purposes: first, it lets us make a well informed decision about the
+team, and second, once you complete it you will be ready to hop onto a specific subteam.
 
-Check github for updates! 
+Check GitHub for updates!
 
 ROS2 Intro Slides: https://docs.google.com/presentation/d/15GYIs2856JcJFc202Pkjt8MY6tZNBv61R5_f19z1MYk/edit?usp=sharing
 
-# Submission Guidelines  
-- Download a zip of this repo and implemeent fixes locally
-- email completed project to: jgerdsen@andrew.cmu.edu, angelaab@andrew.cmu.edu **by 9/23**
-- if you don't finish, that's fine! we would suggest going through all tasks and writing out in natural language how you intended to solve. That way, if you're in a time crunch, you can submit what you have.
-- AI Usage: You can use AI. However, code should remain human readable. Look for ways to demonstrate you can solve problems computationally and act as a systems thinker. Be able to answer questions about design decisions. 
+# Submission Guidelines
+
+- Download a zip of this repo and implement your fixes locally.
+- Email your completed project to jgerdsen@andrew.cmu.edu and angelaab@andrew.cmu.edu **by 9/23**.
+- If you do not finish, that is fine. We suggest working through all of the tasks and writing out in natural language how you intended to solve them. That way, if you are in a time crunch, you can submit what you have.
+- On AI usage: you can use AI. However, your code should remain human readable. Look for ways to demonstrate that you can solve problems computationally and act as a systems thinker, and be ready to answer questions about your design decisions.
+
 ---
-# Project Writeup 
+
+# Project Writeup
 
 The `move` package is a **Gazebo sim testbed**: a differential-drive robot with a lidar
 and an IMU, simulated in Gazebo and bridged into ROS 2 so you can see its sensor data and
@@ -20,7 +26,9 @@ its transforms in RViz.
 
 ## 0.: Gazebo Sim Testbed Bringup
 
-Note, you need a machine running. Ubuntu with **ROS 2 Jazzy** and **Gazebo Harmonic** (`ros_gz_sim`, `ros_gz_bridge`)
+Note that you need a machine running Ubuntu with **ROS 2 Jazzy** and **Gazebo Harmonic**
+(`ros_gz_sim`, `ros_gz_bridge`).
+
 ### 1. Build the workspace
 
 ```bash
@@ -42,7 +50,7 @@ ros2 launch move sim.launch.py
 You should get a Gazebo window with a blue robot on a ground plane, and an RViz window
 showing the same robot with its lidar returns.
 
-You can access the following data from simulation: lidar + imu 
+You can access the following data from the simulation, the lidar and the IMU:
 
 ```bash
 ros2 topic echo /lidar --once     # LaserScan, 640 ranges, frame_id: chassis
@@ -70,35 +78,37 @@ exactly one place. `robot_state_publisher` reads that same `model.sdf` for
 
 ---
 
-## TASK 1: Make it move 
+## TASK 1: Make it move
 
-By publishing data to a ceretain topic, the robot can move forward.
+By publishing data to a certain topic, the robot can move forward.
 
-1) Identify what the topic is. note, as a sanity check if you run this command, the robot should move forwar
+1) Identify what the topic is. As a sanity check, if you run the following command, the robot should move forward.
 
 ```bash
 ros2 topic pub /topic_name geometry_msgs/msg/Twist "{linear: {x: 1.0}}" -r 10
 ```
 
-2) write a publisher to the topic in the node (@TODO fill in pseudocode for this pub, e.g. self.move_pub = self._publisher("topic_name",QOS stuff...)) 
+2) Write a publisher to that topic in the node. (@TODO fill in pseudocode for this publisher, e.g. self.move_pub = self._publisher("topic_name", QOS stuff...))
 
-3) select a path to navigate the robot around the wall. In comments, Document why you choose this path and how you choose to represent it. 
+3) Select a path to navigate the robot around the wall. In your comments, document why you chose this path and how you chose to represent it.
 
 
-## TASK 2: analyze error 
-By receiving data from a certain topic, the robot can get information on its current position. Hint: This data comes from one of the two onboard sensors on the robot. 
+## TASK 2: Analyze error
 
-1) Identify what the topic is. As a sanity check, this topic should have 6D data. 
+By receiving data from a certain topic, the robot can get information about its current position. As a hint, this data comes from one of the two onboard sensors on the robot.
 
-2) write a subscriber to the topic in the node (@TODO fill in pseudocode for this subscriber, e.g. self.robot_pos_sub = self._subscriber("topic_name",QOS stuff...)) 
+1) Identify what the topic is. As a sanity check, this topic should carry 6D data.
 
-3) define a callback to the topic that compares the data received on the robots position to the actual information. it should also use the self.publish("/error") topic if it the delta is above self.error_thresh 
+2) Write a subscriber to that topic in the node. (@TODO fill in pseudocode for this subscriber, e.g. self.robot_pos_sub = self._subscriber("topic_name", QOS stuff...))
 
-## TASK 3 (Stretch): Detect Obstructions 
-Warning: this is more openeded! 
+3) Define a callback for the topic that compares the data it receives about the robot's position against the actual information. The callback should also publish on the self.publish("/error") topic whenever the delta is above self.error_thresh.
 
-1) write a subscriber to receive lidar data
-2) within the lidar data, we do not care about going through the barrier - think of this as sensor noise like dust in the air that won't really obstruct our robots progress. However, we do care about avoid the poles. 
-3) In the subscription, come up with a way to identify obstacles. by implementing the function is_obstalce(point)
-the code will then filter out all obstacles and publish a refined cloud to /obstacle_cloud
+## TASK 3 (Stretch): Detect Obstructions
 
+Warning: this task is more open-ended!
+
+1) Write a subscriber to receive the lidar data.
+
+2) Within the lidar data, we do not care about going through the barrier. Think of it as sensor noise, like dust in the air that will not really obstruct the robot's progress. We do, however, care about avoiding the poles.
+
+3) In the subscription, come up with a way to identify obstacles by implementing the function is_obstacle(point). The code will then filter out all obstacles and publish a refined cloud to /obstacle_cloud.
