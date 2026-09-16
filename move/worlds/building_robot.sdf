@@ -63,9 +63,13 @@
       <link name="link">
         <visual name="visual">
           <geometry><box><size>0.5 6 2</size></box></geometry>
+          <!-- Weak lidar return: the barrier is meant to look like dust, not
+               a hard obstacle. gz-sensors maps laser_retro -> point intensity. -->
+          <laser_retro>0</laser_retro>
+          <transparency>0.7</transparency>
           <material>
-            <ambient>0.6 0.6 0.6 1</ambient>
-            <diffuse>0.6 0.6 0.6 1</diffuse>
+            <ambient>0.6 0.6 0.6 0.3</ambient>
+            <diffuse>0.6 0.6 0.6 0.3</diffuse>
           </material>
         </visual>
         <collision name="collision">
@@ -79,6 +83,9 @@
       <link name="link">
         <visual name="visual">
           <geometry><cylinder><radius>0.3</radius><length>1.5</length></cylinder></geometry>
+          <!-- Retroreflective: the poles come back hot in the intensity field.
+               2000 is gz-sensors' maximum; higher values are clamped to it. -->
+          <laser_retro>2000</laser_retro>
           <material>
             <ambient>0.8 0.4 0.1 1</ambient>
             <diffuse>0.8 0.4 0.1 1</diffuse>
