@@ -61,7 +61,7 @@ move/
   models/vehicle_blue/model.config  model metadata for model:// lookup
   worlds/building_robot.sdf         the world; <include>s the model above
   rviz/vehicle.rviz                 RViz displays + fixed frame
-  src/robot_controller.cc           example node: sensors in, cmd_vel out
+  src/publisher.py                  starter node: fill in TASKS 1-3 here
 ```
 
 The world **includes** the model rather than duplicating it, so the robot is defined in

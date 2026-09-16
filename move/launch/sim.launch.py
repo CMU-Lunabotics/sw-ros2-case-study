@@ -49,8 +49,8 @@ def generate_launch_description():
 
     controller_launch_arg = DeclareLaunchArgument(
         'controller', default_value='false',
-        description='Run the forward-drive controller node. Off by default so the '
-                    'robot sits still on bringup; enable with controller:=true.'
+        description='Run the starter node (move/src/publisher.py). Off by default so '
+                    'the robot sits still on bringup; enable with controller:=true.'
     )
 
     # Lets the world resolve <uri>model://vehicle_blue</uri>
@@ -87,6 +87,9 @@ def generate_launch_description():
             gz_topic + '/odometry@nav_msgs/msg/Odometry@gz.msgs.Odometry',
             # Lidar (Gazebo -> ROS2)
             '/lidar@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            # Point cloud for TASK 3. The gpu_lidar has one vertical sample,
+            # so this is a single flat row of points, not a 3D volume.
+            '/lidar/points@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked',
             # IMU (Gazebo -> ROS2) -- note the gz type is IMU, not Imu
             '/imu@sensor_msgs/msg/Imu[gz.msgs.IMU',
         ],
@@ -111,10 +114,10 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Forward-drive controller: /lidar + /imu -> /cmd_vel
+    # Starter node applicants fill in (see README TASKS 1-3).
     controller = Node(
         package='move',
-        executable='mover',
+        executable='publisher',
         name='route_pub',
         output='screen',
         parameters=[{'use_sim_time': True}],

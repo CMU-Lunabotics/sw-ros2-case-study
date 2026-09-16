@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 3.8)
 project(move)
 
+# Assets plus one Python node -- no C++ targets in this package.
 find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(geometry_msgs REQUIRED)
-find_package(sensor_msgs REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -18,12 +16,11 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(mover src/robot_controller.cc)
-ament_target_dependencies(mover rclcpp geometry_msgs sensor_msgs)
-
-install(TARGETS
-  mover
-  DESTINATION lib/${PROJECT_NAME})
+# Starter node applicants fill in; installed as `ros2 run move publisher`
+install(PROGRAMS
+  src/publisher.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME publisher)
 
 install(
   DIRECTORY
