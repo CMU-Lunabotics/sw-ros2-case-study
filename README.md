@@ -1,17 +1,24 @@
-# Starter Project
+# Lunabotics Application Follow Up: ROS2 Case Study
 
-# submit by 9/23 
+only have a limited number of spots, we want more information to guide second round of seleciton. also, get up to speed on ROS2. so, two purposes: 1) we can make a well informed decision about on the team and 2) once you compelte, you'll be good to hop on a specific subteam. 
+
+Check github for updates! 
+
+# Submission Guidelines  
+- Download a zip of this repo and implemeent fixes locally
+- email completed project to: jgerdsen@andrew.cmu.edu, angelaab@andrew.cmu.edu **by 9/23**
+- if you don't finish, that's fine! we would suggest going through all tasks and writing out in natural language how you intended to solve. That way, if you're in a time crunch, you can submit what you have.
+- AI Usage: You can use AI. However, code should remain human readable. Look for ways to demonstrate you can solve problems computationally and act as a systems thinker. Be able to answer questions about design decisions. 
+---
+# Project Writeup 
 
 The `move` package is a **Gazebo sim testbed**: a differential-drive robot with a lidar
 and an IMU, simulated in Gazebo and bridged into ROS 2 so you can see its sensor data and
 its transforms in RViz.
 
----
-## Setup: Gazebo Sim Testbed Bringup
+## 0.: Gazebo Sim Testbed Bringup
 
 Note, you need a machine running. Ubuntu with **ROS 2 Jazzy** and **Gazebo Harmonic** (`ros_gz_sim`, `ros_gz_bridge`)
-
-
 ### 1. Build the workspace
 
 ```bash
@@ -32,9 +39,6 @@ ros2 launch move sim.launch.py
 
 You should get a Gazebo window with a blue robot on a ground plane, and an RViz window
 showing the same robot with its lidar returns.
-
-The robot **sits still** on startup. That is intentional — nothing is commanding it yet.
-
 
 You can access the following data from simulation: lidar + imu 
 
@@ -66,29 +70,33 @@ exactly one place. `robot_state_publisher` reads that same `model.sdf` for
 
 ## TASK 1: Make it move 
 
-you can drive the robot manually, want to replicate this behavior in an automatic fashion
+By publishing data to a ceretain topic, the robot can move forward.
 
-### 5. Drive the robot
-
-```bash
-ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 1.0}}" -r 10
-```
-
-Or run the bundled controller, which subscribes to `/lidar` and `/imu` and publishes
-`/cmd_vel`, stopping when the lidar sees an obstacle within 1.5 m:
+1) Identify what the topic is. note, as a sanity check if you run this command, the robot should move forwar
 
 ```bash
-ros2 run move mover
-# or bring the whole stack up with it enabled:
-ros2 launch move sim.launch.py controller:=true
+ros2 topic pub /topic_name geometry_msgs/msg/Twist "{linear: {x: 1.0}}" -r 10
 ```
 
-The world contains a wall at x=6 and a pillar at (4, 2.5) so the lidar has something to
-return. With the controller enabled the robot drives forward and stops ~1.5 m short of the
-wall.
+2) write a publisher to the topic in the node (@TODO fill in pseudocode for this pub, e.g. self.move_pub = self._publisher("topic_name",QOS stuff...)) 
 
-## Task 2: analyze error 
-Subscribe to robots state on imu and compare recorded movement versus instructured movement
- 
+3) select a path to navigate the robot around the wall. In comments, Document why you choose this path and how you choose to represent it. 
+
+
+## TASK 2: analyze error 
+By receiving data from a certain topic, the robot can get information on its current position. Hint: This data comes from one of the two onboard sensors on the robot. 
+
+1) Identify what the topic is. As a sanity check, this topic should have 6D data. 
+
+2) write a subscriber to the topic in the node (@TODO fill in pseudocode for this subscriber, e.g. self.robot_pos_sub = self._subscriber("topic_name",QOS stuff...)) 
+
+3) define a callback to the topic that compares the data received on the robots position to the actual information. it should also use the self.publish("/error") topic if it the delta is above self.error_thresh 
+
 ## TASK 3 (Stretch): Detect Obstructions 
+Warning: this is more openeded! 
+
+1) write a subscriber to receive lidar data
+2) within the lidar data, we do not care about going through the barrier - think of this as sensor noise like dust in the air that won't really obstruct our robots progress. However, we do care about avoid the poles. 
+3) In the subscription, come up with a way to identify obstacles. by implementing the function is_obstalce(point)
+the code will then filter out all obstacles and publish a refined cloud to /obstacle_cloud
 
