@@ -4,6 +4,8 @@ only have a limited number of spots, we want more information to guide second ro
 
 Check github for updates! 
 
+ROS2 Intro Slides: https://docs.google.com/presentation/d/15GYIs2856JcJFc202Pkjt8MY6tZNBv61R5_f19z1MYk/edit?usp=sharing
+
 # Submission Guidelines  
 - Download a zip of this repo and implemeent fixes locally
 - email completed project to: jgerdsen@andrew.cmu.edu, angelaab@andrew.cmu.edu **by 9/23**
